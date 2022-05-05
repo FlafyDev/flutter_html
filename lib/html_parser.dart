@@ -843,10 +843,21 @@ class ContainerSpan extends StatelessWidget {
     required this.style,
     required this.newContext,
     this.shrinkWrap = false,
-  }): super(key: key);
+  }): super(key: key) {
+    if (this.children != null && this.newContext.style.textIndent != null) {
+      if (newContext.style.textIndent!.units == '') {
+        this.children!.insert(0, WidgetSpan(child: SizedBox(width: this.newContext.style.textIndent!.size)));
+      } else {
+        print(this.newContext.style.textIndent!.size);
+        this.children!.insert(0, WidgetSpan(child: FractionallySizedBox(widthFactor: this.newContext.style.textIndent!.size)));
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext _) {
+    print("${newContext.style.textIndent} ${newContext}");
+    print("${style.textIndent} ${child}");
     return Container(
       decoration: BoxDecoration(
         border: style.border,

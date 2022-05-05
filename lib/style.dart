@@ -160,6 +160,12 @@ class Style {
   /// Default: normal (0)
   double? wordSpacing;
 
+  /// CSS attribute "`text-indent`"
+  ///
+  /// Inherited: yes,
+  /// Default: normal (0)
+  TextIndent? textIndent;
+
   /// CSS attribute "`line-height`"
   ///
   /// Supported values: double values
@@ -220,6 +226,7 @@ class Style {
     this.whiteSpace,
     this.width,
     this.wordSpacing,
+    this.textIndent,
     this.before,
     this.after,
     this.border,
@@ -236,14 +243,14 @@ class Style {
   }
 
   static Map<String, Style> fromThemeData(ThemeData theme) => {
-    'h1': Style.fromTextStyle(theme.textTheme.headline1!),
-    'h2': Style.fromTextStyle(theme.textTheme.headline2!),
-    'h3': Style.fromTextStyle(theme.textTheme.headline3!),
-    'h4': Style.fromTextStyle(theme.textTheme.headline4!),
-    'h5': Style.fromTextStyle(theme.textTheme.headline5!),
-    'h6': Style.fromTextStyle(theme.textTheme.headline6!),
-    'body': Style.fromTextStyle(theme.textTheme.bodyText2!),
-  };
+        'h1': Style.fromTextStyle(theme.textTheme.headline1!),
+        'h2': Style.fromTextStyle(theme.textTheme.headline2!),
+        'h3': Style.fromTextStyle(theme.textTheme.headline3!),
+        'h4': Style.fromTextStyle(theme.textTheme.headline4!),
+        'h5': Style.fromTextStyle(theme.textTheme.headline5!),
+        'h6': Style.fromTextStyle(theme.textTheme.headline6!),
+        'body': Style.fromTextStyle(theme.textTheme.bodyText2!),
+      };
 
   static Map<String, Style> fromCss(String css, OnCssParseError? onCssParseError) {
     final declarations = parseExternalCss(css, onCssParseError);
@@ -311,7 +318,7 @@ class Style {
       whiteSpace: other.whiteSpace,
       width: other.width,
       wordSpacing: other.wordSpacing,
-
+      textIndent: other.textIndent,
       before: other.before,
       after: other.after,
       border: other.border,
@@ -333,7 +340,7 @@ class Style {
     LineHeight? finalLineHeight = child.lineHeight != null ?
       child.lineHeight?.units == "length" ?
         LineHeight(child.lineHeight!.size! / (finalFontSize == null ? 14 : finalFontSize.size!) * 1.2) : child.lineHeight
-      : lineHeight;
+        : lineHeight;
     return child.copyWith(
       backgroundColor: child.backgroundColor != Colors.transparent ?
         child.backgroundColor : backgroundColor,
@@ -356,6 +363,7 @@ class Style {
       textShadow: child.textShadow ?? textShadow,
       whiteSpace: child.whiteSpace ?? whiteSpace,
       wordSpacing: child.wordSpacing ?? wordSpacing,
+      textIndent: child.textIndent ?? textIndent,
       maxLines: child.maxLines ?? maxLines,
       textOverflow: child.textOverflow ?? textOverflow,
       textTransform: child.textTransform ?? textTransform,
@@ -389,6 +397,7 @@ class Style {
     WhiteSpace? whiteSpace,
     double? width,
     double? wordSpacing,
+    TextIndent? textIndent,
     String? before,
     String? after,
     Border? border,
@@ -427,6 +436,7 @@ class Style {
       whiteSpace: whiteSpace ?? this.whiteSpace,
       width: width ?? this.width,
       wordSpacing: wordSpacing ?? this.wordSpacing,
+      textIndent: textIndent ?? this.textIndent,
       before: beforeAfterNull == true ? null : before ?? this.before,
       after: beforeAfterNull == true ? null : after ?? this.after,
       border: border ?? this.border,
@@ -525,6 +535,21 @@ class LineHeight {
   }
 
   static const normal = LineHeight(1.2);
+}
+
+class TextIndent {
+  final double size;
+  final String units;
+  
+  const TextIndent(this.size, {this.units = ""});
+
+  factory TextIndent.percent(double percent) {
+    return TextIndent(percent / 100.0, units: "%");
+  }
+
+  factory TextIndent.em(double em) {
+    return TextIndent(em, units: "em");
+  }
 }
 
 class ListStyleType {

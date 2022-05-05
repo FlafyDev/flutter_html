@@ -304,6 +304,9 @@ Style declarationsToStyle(Map<String, List<css.Expression>> declarations) {
         case 'text-align':
           style.textAlign = ExpressionMapping.expressionToTextAlign(value.first);
           break;
+        case 'text-indent':
+          style.textIndent = ExpressionMapping.expressionToTextIndent(value.first) ?? style.textIndent;
+          break;
         case 'text-decoration':
           List<css.LiteralTerm?>? textDecorationList = value.whereType<css.LiteralTerm>().toList();
           /// List<css.LiteralTerm> might include other values than the ones we want for [textDecorationList], so make sure to remove those before passing it to [ExpressionMapping]
@@ -645,6 +648,19 @@ class ExpressionMapping {
         case "xx-large":
           return FontSize.xxLarge;
       }
+    }
+    return null;
+  }
+
+  static TextIndent? expressionToTextIndent(css.Expression value) {
+    if (value is css.NumberTerm) {
+      return TextIndent(double.tryParse(value.text) ?? 0);
+    } else if (value is css.PercentageTerm) {
+      return TextIndent.percent(double.tryParse(value.text) ?? 0);
+    } else if (value is css.EmTerm) {
+      return TextIndent.em(double.tryParse(value.text) ?? 0);
+    } else if (value is css.LengthTerm) {
+      return TextIndent(double.tryParse(value.text.replaceAll(new RegExp(r'\s+(\d+\.\d+)\s+'), '')) ?? 0);
     }
     return null;
   }
